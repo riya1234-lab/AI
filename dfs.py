@@ -1,34 +1,32 @@
-def dfs(graph, start, goal):
-    visited = set()
-    visit_order = []
+def dfs(g, node, goal, visited, path):
+    visited.append(node)
+    path.append(node)
 
-    def dfs_util(node, path):
-        visited.add(node)
-        visit_order.append(node)
+    if node == goal:
+        print("Visited:", visited)
+        print("Path:", path)
+        return True
 
-        if node == goal:
-            print("Visited Nodes:", visit_order)
-            print("Path:", path)
-            return True
+    # Use get() to avoid error if node not present
+    for n in g.get(node, []):
+        if n not in visited:
+            if dfs(g, n, goal, visited, path):
+                return True
 
-        for neighbor in graph[node]:
-            if neighbor not in visited:
-                if dfs_util(neighbor, path + [neighbor]):
-                    return True
-        return False
+    path.pop()
+    return False
 
-    if not dfs_util(start, [start]):
-        print("Goal not found")
 
-# Example Graph
-graph = {
-    'A': ['B', 'C'],
-    'B': ['D', 'E'],
-    'C': ['F'],
-    'D': [],
-    'E': ['G'],
-    'F': [],
-    'G': []
-}
+# Input graph
+g = {}
+n = int(input("Enter number of nodes: "))
 
-dfs(graph, 'A', 'G')
+for i in range(n):
+    node = input("Enter node: ").strip()
+    neighbors = input(f"Enter neighbors of {node}: ").split()
+    g[node] = neighbors
+
+start = input("Enter start node: ").strip()
+goal = input("Enter goal node: ").strip()
+
+dfs(g, start, goal, [], [])
